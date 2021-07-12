@@ -75,44 +75,44 @@ app.post('/api/shorturl/',async (req,res)=>{
     const url = req.body.url;
     let shortUrl;
     if(validUrl.isHttpsUri(url) || validUrl.isHttpUri(url)){ 
-      if(await URI.findOne({'url':url}).then((res,err)=>{
-        if(err){
-          console.log(err);
-          res.json({'problem':'problem'});
+      try{
+        if(await URI.findOne({'url':url}).then((res,err)=>{
+          try{
+            shortUrl=res.shortUrl;
+          }
+          catch(err){
+            console.log(err);
+          }  
+          return res;
+        })){
+          // bilgileri getir
+          res.json({ "original_url" : url, "short_url" : shortUrl})
         }
-        try{
-          shortUrl=res.shortUrl;
-        }
-        catch(err){
-          console.log(err);
-        }  
-        return res;
-      })){
-        // bilgileri getir
-        res.json({ "original_url" : url, "short_url" : shortUrl})
-      }
-      else{
-        console.log('veritabanında yok');  
-        let key = Math.floor(Math.random() * 10000) + 1;
-        let i =0;
-        while(i===0){
-          await URI.findOne({key},(err, data) => {
-            if (data) {
-              key = Math.floor(Math.random() * 10000) + 1;
-            } else {
-              i=1;
-            }
+        else{
+          console.log('veritabanında yok');  
+          let key = Math.floor(Math.random() * 10000) + 1;
+          let i =0;
+          while(i===0){
+            await URI.findOne({key},(err, data) => {
+              if (data) {
+                key = Math.floor(Math.random() * 10000) + 1;
+              } else {
+                i=1;
+              }
+            })
+          }
+          console.log('sifre',key);
+          const kayit = new URI({
+            url,
+            shortUrl:key
           })
-        }
-        console.log('sifre',key);
-        const kayit = new URI({
-          url,
-          shortUrl:key
-        })
-        await kayit.save().then(console.log('kayıt başarılı'));
-        res.json({ "original_url" : kayit.url, "short_url" : kayit.shortUrl})
-        //yeni kayıt oluştur
-      }
+          await kayit.save().then(console.log('kayıt başarılı'));
+          res.json({ "original_url" : kayit.url, "short_url" : kayit.shortUrl})
+          //yeni kayıt oluştur
+         }
+     }catch(err){
+       console.log(err);
+     }
     }
     else{
       res.json({ "error": 'invalid url' });
