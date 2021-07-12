@@ -6,7 +6,7 @@ const validUrl = require('valid-url');
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-mongoose.connect('mongodb+srv://mongooseCihan:uI9BNnd7EyQMo69A@cluster0.u8qja.mongodb.net/mongooseFcc?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI || 'mongodb+srv://mongooseCihan:uI9BNnd7EyQMo69A@cluster0.u8qja.mongodb.net/mongooseFcc?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 var db = mongoose.connection;
 
