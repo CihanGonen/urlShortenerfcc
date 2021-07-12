@@ -79,8 +79,8 @@ app.post('/api/shorturl/',async (req,res)=>{
         try{
           shortUrl=res.shortUrl;
         }
-        catch{
-          
+        catch(err){
+          console.log(err);
         }  
         return res;
       })){
