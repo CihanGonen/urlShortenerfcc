@@ -75,7 +75,11 @@ app.post('/api/shorturl/',async (req,res)=>{
     const url = req.body.url;
     let shortUrl;
     if(validUrl.isHttpsUri(url) || validUrl.isHttpUri(url)){ 
-      if(await URI.findOne({'url':url}).then((res)=>{
+      if(await URI.findOne({'url':url}).then((res,err)=>{
+        if(err){
+          console.log(err);
+          res.json({'problem':'problem'});
+        }
         try{
           shortUrl=res.shortUrl;
         }
